@@ -1,0 +1,53 @@
+IMAGE_NAME = "generic/rhel8"
+
+Vagrant.configure("2") do |config|
+
+    config.ssh.insert_key = false
+
+    config.vm.provider "virtualbox" do |v|
+        v.memory = 4096
+        v.cpus = 4
+    end
+
+    config.vm.define "vagrant" do |node|
+        node.vm.box = IMAGE_NAME
+        node.vm.network "private_network", ip: "192.168.149.100"
+        node.vm.hostname = "vagrant"
+    end
+
+  config.vm.provision "software" , type:"file", run: "always" do |b|
+    b.source = "../../software/"
+    b.destination = "/tmp"
+  end
+
+  config.vm.provision "install-splunk",  type:'shell', before: "software", run: "never" do |s|
+    s.path = "scripts/install-splunk.sh"
+    s.env = { }
+  end
+
+  config.vm.provision "install-nessus",  type:'shell', before: "software", run: "never" do |s|
+    s.path = "scripts/install-nessus.sh"
+    s.env = { }
+  end
+
+ # RHSM BITS using the vagrant-registration plugin
+ config.registration.username = ENV['SUB_USERNAME']
+ config.registration.password = ENV['SUB_PASSWORD']
+ #config.registration.pools = ['pool1', 'pool2']
+  config.registration.unregister_on_halt = false
+
+ ## config.vm.provision "shell", path: "scripts/update-centos-box.sh"
+  config.vm.provision "cis", type:'ansible', run: "never" do |ansible|
+    vagrant_root = File.dirname(__FILE__)
+    ENV['ANSIBLE_ROLES_PATH'] = "#{vagrant_root}/ansible-roles"
+    #ansible.ask_vault_pass = true
+    ansible.playbook = "playbook_vagrant.yml" # --start-at-task=ENV['START_TASK']"
+    ansible.raw_arguments = Shellwords.shellsplit(ENV['ANSIBLE_ARGS']) if ENV['ANSIBLE_ARGS']
+    ansible.extra_vars = {
+      ansible_python_interpreter:"/usr/bin/python3",
+    }
+    ansible.inventory_path = "#{vagrant_root}/inventories/vagrant/hosts"
+  end
+
+
+end

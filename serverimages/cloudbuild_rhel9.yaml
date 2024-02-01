@@ -1,0 +1,7 @@
+
+steps:
+- name: 'gcr.io/$PROJECT_ID/packer'
+  script: |
+    cd serverimages/rhel9/base
+    packer init -upgrade .
+    packer build -var-file=rhel9.pkrvars.hcl .

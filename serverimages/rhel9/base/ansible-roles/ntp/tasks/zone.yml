@@ -1,0 +1,6 @@
+- name: Set timezone
+  timezone:
+    name: "{{ timezone }}"
+  when:
+    - timezone_enabled
+    - timezone is defined  

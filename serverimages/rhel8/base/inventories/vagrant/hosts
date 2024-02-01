@@ -1,0 +1,2 @@
+[vagrant]
+vagrant ansible_host=192.168.149.100

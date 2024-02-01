@@ -1,0 +1,29 @@
+---
+- name: run versionscheck if enabled
+  ansible.builtin.include_tasks: versioncheck.yml
+  when: submodules_versioncheck|bool
+
+- name: Ansible OS Family
+  debug:
+    msg: "Ansible OS Family: {{ ansible_os_family }}"
+
+- name: Ansible Distribution
+  debug:
+    msg: "Ansible Distribution : {{ ansible_distribution }}"
+
+- name: Ansible Major Version
+  debug:
+    msg: "Ansible Major Version : {{ ansible_distribution_major_version }}"
+
+
+- name: Include OS specific variables.
+  ansible.builtin.include_vars: "{{ lookup('first_found', ntp__vars) }}"
+
+- name: Install ntp
+  ansible.builtin.include_tasks: "{{ lookup('first_found', ntp__install) }}"
+
+- name: Configure ntp
+  ansible.builtin.include_tasks: config.yml
+
+- name: Configure timezone
+  ansible.builtin.include_tasks: zone.yml

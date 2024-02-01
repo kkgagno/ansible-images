@@ -1,0 +1,15 @@
+---
+# Tasks file for install ntp daemon on OpenBSD system
+
+- name: Install ntp daemon on OpenBSD
+  become: true
+  ansible.builtin.package:
+    name: "{{ ntp_package }}"
+    state: present
+
+- name: Service ntp on OpenBSD
+  become: true
+  ansible.builtin.service:
+    name: "{{ ntp_service }}"
+    enabled: true
+    state: started

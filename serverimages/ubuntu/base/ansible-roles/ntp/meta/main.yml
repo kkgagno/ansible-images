@@ -1,0 +1,26 @@
+---
+galaxy_info:
+  role_name: ntp
+  description: install and configure the Network Time Protocol (NTP) Daemon
+
+  min_ansible_version: 2.11
+
+  platforms:
+    - name: Archlinux
+      versions: all
+    - name: Clearlinux
+      version: all
+    - name: Debian
+      versions: all
+    - name: EL
+      versions: all
+    - name: Fedora
+      versions: all
+
+  galaxy_tags:
+    - system
+    - packaging
+    - ntp
+    - time
+
+dependencies: []

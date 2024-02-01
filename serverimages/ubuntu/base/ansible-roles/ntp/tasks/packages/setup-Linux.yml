@@ -1,0 +1,36 @@
+---
+# Tasks file for install ntp daemon on Linux system
+
+- name: Update apt cache
+  become: true
+  ansible.builtin.apt:
+    cache_valid_time: 3600
+    update_cache: true
+    #allow_unauthenticated: yes
+  when:
+    - ansible_pkg_mgr == "apt"
+
+- name: Update emerge cache on Gentoo
+  become: true
+  ansible.builtin.shell: emerge-webrsync
+  changed_when: false
+  when: ansible_os_family == "Gentoo"
+
+- name: "Remove chrony"
+  become: true
+  ansible.builtin.package:
+    name: chrony
+    state: absent
+
+- name: Install ntp daemon on Linux
+  become: true
+  ansible.builtin.package:
+    name: "{{ ntp_package }}"
+    state: present
+
+- name: Service ntp on Linux
+  become: true
+  ansible.builtin.service:
+    name: "{{ ntp_service }}"
+    enabled: true
+    state: started
