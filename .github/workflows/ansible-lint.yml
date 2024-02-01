@@ -20,7 +20,7 @@ jobs:
           pip install setuptools wheel ansible ansible-lint
 
       - name: Lint Playbook
-        run: ansible-lint ansible-images/serverimages/cloudbuild_rhel9.yaml
+        run: ansible-lint serverimages/cloudbuild_rhel9.yaml
 
       - name: Playbook Run
         run: ansible-playbook -b --connection=local -i 127.0.0.1, main.yml
