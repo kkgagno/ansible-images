@@ -1,14 +1,15 @@
 name: Check-Python
 run-name: Check-Python
 on: workflow_dispatch
+
 env:
   PACKER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
 
   Check-Python:
 
-    runs-on: ubuntu-20.04
-
+    #runs-on: ubuntu-20.04
+    runs-on: self-hosted
     permissions:
       contents: 'read'
       id-token: 'write'
