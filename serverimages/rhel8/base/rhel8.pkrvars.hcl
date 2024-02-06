@@ -1,5 +1,5 @@
-project_id   = "mofo-proj"
-zone         = "us-east1-b"
+project_id   = "test-ground-403314"
+zone         = "us-central1-a"
 machine_type = "e2-medium"
 network = ""
-subnetwork = "keith-test"
+subnetwork = "default"
