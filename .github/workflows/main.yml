@@ -29,7 +29,7 @@ jobs:
         uses: 'google-github-actions/auth@v1'
         with:
           workload_identity_provider: 'projects/1077325643538/locations/global/workloadIdentityPools/idp-pool/providers/github-provider'
-          service_account: 'github-action-service-account@cna-g-sbx-proj-prisma.iam.gserviceaccount.com'
+          service_account: 'gitman@test-ground-403314.iam.gserviceaccount.com'
 
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v1'
