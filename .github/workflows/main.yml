@@ -25,11 +25,16 @@ jobs:
       - name: Check ansible
         run: "ansible --version"
 
+     # - id: 'auth'
+     #   uses: 'google-github-actions/auth@v1'
+     #   with:
+     #     workload_identity_provider: 'projects/341535952302/locations/global/workloadIdentityPools/my-pool/providers/my-provider'
+     #     service_account: 'gitman@test-ground-403314.iam.gserviceaccount.com'
+
       - id: 'auth'
         uses: 'google-github-actions/auth@v1'
         with:
-          workload_identity_provider: 'projects/341535952302/locations/global/workloadIdentityPools/my-pool/providers/my-provider'
-          service_account: 'gitman@test-ground-403314.iam.gserviceaccount.com'
+          credentials_json: '${{ secrets.SC_JSON }}'
 
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v1'
