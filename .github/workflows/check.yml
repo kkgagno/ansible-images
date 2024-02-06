@@ -1,0 +1,67 @@
+name: Check-Python
+run-name: Check-Python
+on: workflow_dispatch
+env:
+  PACKER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+jobs:
+
+  Check-Python:
+
+    runs-on: ubuntu-20.04
+
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+
+      - name: Check ansible
+        run: "ansible --version"
+       
+      - name: Check Python
+        run: "python --version"
+        
+      - name: Check Python3
+        run: "python3 --version"
+      
+      - name: List Python
+        run: "ls -lah /usr/bin/python*"
+
+      - name: List Python 2
+        run: "ls -lah /usr/local/bin/python*"
+
+      - name: List Pip
+        run: "ls -lah /usr/bin/pip*"
+
+      - name: List Pip 2
+        run: "ls -lah /usr/local/bin/pip*"
+
+      #- name: Install cis role dependecies
+      #  run: "sudo apt-get install python3-jmespath"
+      
+      #- name: Install cis role dependecies2
+      #  run: "python3 -m pip show jmespath"
+        
+      # - name: Install cis role dependecies
+      #   run: "pipx install jmespath"
+        
+      - name: Install jmespath
+        run: |
+          sudo pipx inject ansible-core jmespath        
+      
+     #- name: Install cis role dependecies 2
+     #  run: "pip install jmespath"
+        
+     #- name: Install cis role dependecies 3
+     #  run: "python3 -m pip show jmespath" 
+        
+     # - name: Install cis role dependecies 4
+     #   run: "python -m pip show jmespath"
+        
+     # - name: Export
+     #   run:  export PYTHONPATH=/home/runner/.local/lib/python3.8/site-packages
+           
+      - name: Test jmespath
+        run : |
+          ansible -vv localhost -m debug --extra-vars '{"c": {"pacman":"mrs","ghosts":["inky","pinky","clyde","sue"]}}' -a msg="{{ c | json_query('ghosts[1]') }}"
+      

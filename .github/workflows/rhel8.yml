@@ -1,0 +1,60 @@
+name: GCP-Packer-Rhel8
+run-name: GCP-Packer-Rhel8
+on: workflow_dispatch
+env:
+  PACKER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+jobs:
+
+  Build-GCP-Rhel8-Image:
+
+    runs-on: ubuntu-20.04
+
+    defaults:
+      run:
+        working-directory: ${{ github.workspace }}/serverimages/rhel8/base
+
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: Check ansible
+        run: "ansible --version"
+
+      - id: 'auth'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          workload_identity_provider: 'projects/1077325643538/locations/global/workloadIdentityPools/idp-pool/providers/github-provider'
+          service_account: 'github-action-service-account@cna-g-sbx-proj-prisma.iam.gserviceaccount.com'
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v1'
+
+      - name: 'Use gcloud CLI'
+        run: 'gcloud info'
+
+      - name: Setup `packer`
+        uses: hashicorp/setup-packer@main
+        id: setup
+        with:
+          version: "1.8.6"
+
+      - name: Install jmespath
+        run: |
+          sudo pipx inject ansible-core jmespath
+
+      - name: Test jmespath
+        run: |
+          ansible -vv localhost -m debug --extra-vars '{"c": {"pacman":"mrs","ghosts":["inky","pinky","clyde","sue"]}}' -a msg="{{ c | json_query('ghosts[1]') }}"
+
+      - name: Run `packer init`
+        id: init
+        run: "packer init -upgrade ."
+
+      - name: Run `packer`
+        id: validate
+        run: "packer build -var-file=rhel8.pkrvars.hcl ."
